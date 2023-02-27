@@ -36,6 +36,9 @@ ul {
   height: 100vh;
 }
 
+.main_div h1 {
+  padding: 0 5vw;
+}
 .each-folder {
   margin: 0;
   padding: 0;
@@ -43,7 +46,7 @@ ul {
 }
 .folder-elements {
   display: inline-block;
-  padding: 0 3rem;
+  padding: 0.5rem 0;
   min-width: 15rem;
   margin: 0;
 }
@@ -64,6 +67,7 @@ ul {
 }
 
 .new-folder-button {
+  height: 1.5rem;
   font-weight: bold;
   margin: 0;
   padding: 0 1rem;

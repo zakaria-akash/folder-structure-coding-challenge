@@ -1,18 +1,57 @@
-import { RightSquareTwoTone } from "@ant-design/icons/lib/icons";
+import {
+  DownSquareTwoTone,
+  RightSquareTwoTone,
+} from "@ant-design/icons/lib/icons";
 import React, { Fragment, useState } from "react";
 
 import Folders from "@/store/Folders";
 
-import classes from "./NestedFolders.module.css";
+import DeleteModal from "./DeleteModal";
+import AddModal from "./AddModal";
 
 const NestedFolders = (props) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [currentFolders, setCurrentFolders] = useState(props.item);
 
+  //track folder to delete or in which new folder to be added
+  const [trackFolder, setTrackFolder] = useState({});
+
+  const handleAddFolder = (e) => {
+    e.preventDefault();
+    const new_folder_name = e.target.folderName.value;
+
+    console.log(currentFolders);
+    console.log(trackFolder);
+
+    const userData = [
+      {
+        id: Date.now().toString(36) + Math.random().toString(16).slice(2),
+        name: new_folder_name,
+        folders: null,
+      },
+    ];
+    // inputArr.push(userData);
+
+    const updatedCurrentFolders = currentFolders.map((item) => {
+      if (item.id === trackFolder.id) {
+        if (item.folders == null) {
+          return { ...item, folders: userData };
+        } else {
+          return { ...item, folders: item.folders.push(userData[0]) };
+        }
+      }
+      return { ...item };
+    });
+
+    setCurrentFolders(updatedCurrentFolders);
+    e.target.reset();
+    setOpenAddModal(false);
+  };
+
   return (
     <Fragment>
-      {currentFolders.length >= 1 &&
+      {currentFolders &&
         currentFolders.map((data) => (
           <div
             key={data.id}
@@ -26,54 +65,46 @@ const NestedFolders = (props) => {
             }}
           >
             <div className="folder-elements">
-              <RightSquareTwoTone /> {data.name}{" "}
+              {data.folders ? <DownSquareTwoTone /> : <RightSquareTwoTone />}{" "}
+              {data.name}
+              {/* X button to delete a folder */}
               {Folders[0].id !== data.id && !openDeleteModal && (
                 <button
-                  onClick={() => setOpenDeleteModal(true)}
+                  onClick={() => {
+                    setOpenDeleteModal(true);
+                    setTrackFolder({ id: data.id, name: data.name });
+                  }}
                   className="remove-folder-sign"
                 >
                   X
                 </button>
               )}{" "}
-              ----------------{" "}
-              <button className="new-folder-button">+New</button>
-              <div
-                className={
-                  openDeleteModal ? `${classes.overlay}` : `${classes.hide}`
-                }
-                onClick={() => setOpenDeleteModal(false)}
+              ----------------
+              {/* renderng delete modal components based on X button click */}
+              <DeleteModal
+                openDeleteModal={openDeleteModal}
+                setOpenDeleteModal={setOpenDeleteModal}
+                currentFolders={currentFolders}
+                setCurrentFolders={setCurrentFolders}
+                trackFolder={trackFolder}
+              />
+              {/* +New button to add folder */}
+              <button
+                className="new-folder-button"
+                onClick={() => {
+                  setOpenAddModal(true);
+                  setTrackFolder({ id: data.id, name: data.name });
+                }}
               >
-                <div
-                  className={
-                    openDeleteModal
-                      ? `${classes.modal_show}`
-                      : `${classes.modal_hide}`
-                  }
-                >
-                  <div className={classes.modal_content}>
-                    <div className={classes.close}>
-                      <span onClick={() => setOpenDeleteModal(false)}>X</span>
-                    </div>
-                    <div className={classes.modal_title}>
-                      <h4>Delete the folder: {data.name} </h4>
-                    </div>
-                    <div className={classes.modal_button_holder}>
-                      <button
-                        onClick={() => {
-                          return setCurrentFolders(
-                            currentFolders.filter((itm) => itm.id !== data.id)
-                          );
-                        }}
-                      >
-                        Delete
-                      </button>
-                      <button onClick={() => setOpenDeleteModal(false)}>
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                +New
+              </button>
+              {/* renderng add modal components based on +New button click */}
+              <AddModal
+                openAddModal={openAddModal}
+                setOpenAddModal={setOpenAddModal}
+                trackFolder={trackFolder}
+                handleAddFolder={handleAddFolder}
+              />
             </div>
             {data.folders && (
               <NestedFolders key={data.folders.id} item={data.folders} />

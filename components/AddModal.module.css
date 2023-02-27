@@ -32,7 +32,7 @@
 
 /* Modal Content */
 .modal_content {
-  background-color: #fefefe;
+  background-color: floralwhite;
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
@@ -57,10 +57,20 @@
   cursor: pointer;
 }
 
+.modal_input,
 .modal_title {
   margin: 0 auto;
   text-align: center;
   border: 1px solid black;
+  min-height: 3rem;
+}
+
+.modal_input input,
+.modal_title h4 {
+  margin: 2rem auto;
+  width: 70%;
+  height: 80%;
+  font-weight: bolder;
 }
 .modal_button_holder {
   margin-top: 1.5rem;
@@ -70,6 +80,18 @@
 }
 .modal_button_holder button {
   width: 7rem;
-  height: 2rem;
+  height: 2.5rem;
   font-weight: bolder;
+  cursor: pointer;
+}
+
+.success_button {
+  color: darkgreen;
+  border: 2px solid black;
+}
+
+.success_button:hover {
+  color: black;
+  background-color: lawngreen;
+  border: 2px solid darkgreen;
 }
